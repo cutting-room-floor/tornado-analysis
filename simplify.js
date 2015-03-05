@@ -14,8 +14,8 @@ function scale(xy) {
 
 function center(xy) {
     return [
-        (xy[0][0] + xy[1][0]) / 2,
-        (xy[0][1] + xy[1][1]) / 2
+        ~~((xy[0][0] + xy[1][0]) / 2),
+        ~~((xy[0][1] + xy[1][1]) / 2)
     ];
 }
 
@@ -51,12 +51,22 @@ simple.forEach(function(s, i) {
 ctx.fillStyle = '#000';
 ctx.fillRect(0, 0, 720, height);
 
-simple.forEach(function(s, i) {
-    ctx.fillStyle = color(i);
-    ctx.beginPath();
-    var c = center(s);
-    ctx.fillRect(c[0], c[1], 2, 2);
-    if (i % 500 === 0) {
-        fs.writeFileSync('./out2/' + leftpad(i, 10) + '.png', canvas.toBuffer());
-    }
-});
+for (var i = 0; i < 100; i++) {
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, 720, height);
+    simple.forEach(function(s, j) {
+        if (i > (j / simple.length * 100)) {
+            var c = center(s);
+            ctx.fillStyle = 'magenta';
+            ctx.beginPath();
+            ctx.fillRect(c[0], c[1], 1, 1);
+        } else {
+            ctx.strokeStyle = color(j);
+            ctx.beginPath();
+            ctx.moveTo.apply(ctx, s[0]);
+            ctx.lineTo.apply(ctx, s[1]);
+            ctx.stroke();
+        }
+    });
+    fs.writeFileSync('./out2/' + leftpad(i, 10) + '.png', canvas.toBuffer());
+}
